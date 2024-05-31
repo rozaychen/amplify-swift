@@ -1,0 +1,21 @@
+name: "SwiftAPIBreakage"
+
+on:
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches:
+      - main
+
+jobs:
+  buildAndCheckAPIBreakage:
+    name: buildAndCheckAPIBreakage
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+
+    - name: Swift API Diff
+      uses: ltetzlaff/swift-api-diff@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
