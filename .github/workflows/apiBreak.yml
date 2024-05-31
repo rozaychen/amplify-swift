@@ -16,6 +16,6 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
 
     - name: Swift API Diff
-      uses: ltetzlaff/swift-api-diff@master
+      uses: rozaychen/swift-api-diff@master
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
