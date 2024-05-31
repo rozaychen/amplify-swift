@@ -28,7 +28,8 @@ public class Amplify {
     /// - Tag: Amplify.isConfigured
     static var isConfigured = false
 
-    public static var testBreak: Int = 1
+    public static var testBreak: Int = 2
+    public static var testNoBreak: Int = 3
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
