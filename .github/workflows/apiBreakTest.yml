@@ -52,8 +52,10 @@ jobs:
         echo "Comparing APIs..."
         swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt
 
-        # Print API diff report and capture the output for commenting
-        cat api-diff-report.txt
+        # Debugging
+        ls -la  # List files in the current directory for debugging
+        cat api-diff-report.txt  # Output the contents of the API diff report file for debugging
+
         api_diff_output=$(cat api-diff-report.txt)
         echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
 
