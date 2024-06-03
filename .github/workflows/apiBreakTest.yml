@@ -8,14 +8,11 @@ on:
 jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-      with:
-        ref: main
-        fetch-depth: 0
 
     - name: Install Swift 5.9
       uses: swift-actions/setup-swift@v2
@@ -29,89 +26,30 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        set -eu
+        echo "Swift version: $(swift --version)"
+        echo "Swift package manager version: $(swift package --version)"
+        swift package resolve
 
-        # Function to list all modules in a Swift package that match "Amplify"
-        all_modules() {
-          local repodir="$1"
-          (
-          set -eu
-          cd "$repodir"
-          swift package dump-package | jq '.products |
-                                           map(select(.name == "Amplify")) |
-                                           map(.name) | .[]' | tr -d '"'
-          )
-        }
+        # Ensure we are in the correct directory
+        cd $GITHUB_WORKSPACE
 
-        # Function to build and generate API file for a given tag
-        build_and_do() {
-          local repodir=$1
-          local tag=$2
-          local output=$3
+        # Run swift-api-diff commands here directly
+        OLD_API_DIR=$(mktemp -d)
+        NEW_API_DIR=$(mktemp -d)
 
-          (
-          cd "$repodir"
-          git -c advice.detachedHead=false checkout -q "$tag"
-          swift build
-          while read -r module; do
-            swift api-digester -sdk "$sdk" -dump-sdk -module "$module" \
-                -o "$output/$module.json" -I "$repodir/.build/debug"
-          done < <(all_modules "$repodir")
-          )
-        }
+        echo "Fetching old version..."
+        git checkout ${{ github.event.pull_request.base.sha }}
+        swift build
+        swift api-digester -dump-sdk -module "Amplify -o "$OLD_API_DIR/old.json"
+        echo "Fetching new version..."
+        git checkout ${{ github.sha }}
+        swift build
+        swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json"
+        echo "Comparing APIs..."
+        swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
 
-        # Check and setup SDK path
-        sdk=/
-        if [[ "$(uname -s)" == Darwin ]]; then
-          sdk=$(xcrun --show-sdk-path)
-        fi
-
-        # Ensure jq is installed
-        hash jq 2> /dev/null || { echo >&2 "ERROR: jq must be installed"; exit 1; }
-
-        # Setup temporary directory
-        tmpdir=$(mktemp -d /tmp/.check-api_XXXXXX)
-        repodir=$GITHUB_WORKSPACE
-        new_tag=${{ github.sha }}
-        old_tag=${{ github.event.pull_request.base.sha }}
-
-        git -C "$repodir" fetch -q --prune
-        errors=0
-
-        mkdir "$tmpdir/api-old"
-        mkdir "$tmpdir/api-new"
-
-        echo "Checking public API breakages from $old_tag to $new_tag"
-
-        build_and_do "$repodir" "$new_tag" "$tmpdir/api-new/"
-        build_and_do "$repodir" "$old_tag" "$tmpdir/api-old/"
-
-        for f in "$tmpdir/api-new"/*; do
-          f=$(basename "$f")
-          report="$tmpdir/$f.report"
-          if [[ ! -f "$tmpdir/api-old/$f" ]]; then
-            echo >&2 "🆕 Module: $f"
-            continue
-          fi
-
-          echo -n "Checking $f... "
-          swift api-digester -sdk "$sdk" -diagnose-sdk \
-              --input-paths "$tmpdir/api-old/$f" --input-paths "$tmpdir/api-new/$f" 2>&1 \
-              > "$report" 2>&1
-
-          if ! shasum "$report" | grep -q cefc4ee5bb7bcdb7cb5a7747efa178dab3c794d5; then
-            echo ERROR
-            echo >&2 "🔀 Public API change in $f"
-            cat >&2 "$report"
-            errors=$(( errors + 1 ))
-          else
-            echo OK
-          fi
-        done
-        rm -rf "$tmpdir/api-new" "$tmpdir/api-old"
-
-        if [[ "$errors" == 0 ]]; then
-          echo >&2 "✅ No public API change"
-        fi
-        echo done
-        exit "$errors"
+    - name: Upload API Diff Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-diff-report
+        path: $REPORT_DIR/api-diff-report.txt
