@@ -19,10 +19,13 @@ echo "Diff output:"
 echo "$diff"
 
 # Check for deletions
-if echo "$diff" | grep -q '^-'; then
-    echo "Deletions detected in $FILE_PATH"
+deletions=$(echo "$diff" | grep '^-' | grep -v '^---' | grep -v '^+++')
+if [ -n "$deletions" ]; then
+    echo "Deletions found:"
+    echo "$deletions"
     exit 1
 else
-    echo "No deletions detected in $FILE_PATH"
+    echo "No deletions found."
+    exit 0
 fi
 
