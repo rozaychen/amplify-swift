@@ -50,7 +50,7 @@ jobs:
         swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug
         
         echo "Comparing APIs..."
-        swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
+        swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt
 
         # Capture the output for commenting
         api_diff_output=$(cat api-diff-report.txt)
