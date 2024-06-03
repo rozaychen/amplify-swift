@@ -35,19 +35,19 @@ jobs:
         # Run swift-api-diff commands here directly
         OLD_API_DIR=$(mktemp -d)
         NEW_API_DIR=$(mktemp -d)
-        REPORT_DIR=$(mktemp -d)
+        SDK_PATH=$(xcrun --show-sdk-path)
 
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
         git log -1  # Print the commit info for debugging
         swift build
-        swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug
+        swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
         swift build
-        swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug
+        swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug
         
         echo "Comparing APIs..."
         swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt
