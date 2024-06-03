@@ -56,23 +56,12 @@ jobs:
         api_diff_output=$(cat api-diff-report.txt)
         echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
 
-    - name: Comment on PR with API Diff
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const apiDiffOutput = process.env.api_diff_output;
-          const issueNumber = context.payload.pull_request.number;
-          const owner = context.repo.owner;
-          const repo = context.repo.repo;
-
-          if (apiDiffOutput) {
-            github.rest.issues.createComment({
-              owner: owner,
-              repo: repo,
-              issue_number: issueNumber,
-              body: `### API Diff Report\n\`\`\`\n${apiDiffOutput}\n\`\`\``
-            });
-          } else {
-            console.log("No API diff output found.");
-          }
+        # Comment on PR with API Diff
+        if [[ -n "$api_diff_output" ]]; then
+          echo "API Diff Report:"
+          echo "$api_diff_output"
+          echo "Posting API Diff Report to PR..."
+          gh pr comment "${{ github.event.pull_request.number }}" --body "### API Diff Report\n\`\`\`\n${api_diff_output}\n\`\`\`"
+        else
+          echo "No API diff output found."
+        fi
