@@ -1,4 +1,4 @@
-name: "SwiftAPIBreakage"
+name: "Solution1b"
 
 on:
   pull_request:
