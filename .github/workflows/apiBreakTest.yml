@@ -41,21 +41,34 @@ jobs:
         git checkout ${{ github.event.pull_request.base.sha }}
         git log -1  # Print the commit info for debugging
         swift build
-        swift package describe
         swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
         swift build
-        swift package describe
         swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug
         
         echo "Comparing APIs..."
         swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
 
-    - name: Upload API Diff Report
-      uses: actions/upload-artifact@v3
+        # Capture the output for commenting
+        api_diff_output=$(cat api-diff-report.txt)
+        echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
+
+    - name: Comment on PR with API Diff
+      uses: actions/github-script@v6
       with:
-        name: api-diff-report
-        path: $REPORT_DIR/api-diff-report.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = process.env.api_diff_output;
+          const issue_number = context.payload.pull_request.number;
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+
+          github.issues.createComment({
+            owner: owner,
+            repo: repo,
+            issue_number: issue_number,
+            body: `### API Diff Report\n\`\`\`\n${output}\n\`\`\``
+          });
