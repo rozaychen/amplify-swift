@@ -52,16 +52,33 @@ jobs:
         echo "Comparing APIs..."
         swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt
 
-        # Capture the output for commenting
+        # Print API diff report and capture the output for commenting
+        cat api-diff-report.txt
         api_diff_output=$(cat api-diff-report.txt)
         echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
 
         # Comment on PR with API Diff
-        if [[ -n "$api_diff_output" ]]; then
-          echo "API Diff Report:"
-          echo "$api_diff_output"
-          echo "Posting API Diff Report to PR..."
-          gh pr comment "${{ github.event.pull_request.number }}" --body "### API Diff Report\n\`\`\`\n${api_diff_output}\n\`\`\`"
+        if [[ $api_diff_output || $? -ne 0 ]]; then
+          echo "Posting API Diff report to PR..."
+          const issueNumber = context.payload.pull_request.number;
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const github = require('@actions/github');
+
+          const octokit = new github.GitHub(process.env.GITHUB_TOKEN);
+
+          const apiDiffOutput = process.env.api_diff_output;
+
+          if (apiDiffOutput) {
+            octokit.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: issueNumber,
+              body: `### API Diff Report\n\`\`\`\n${apiDiffOutput}\n\`\`\``
+            });
+          } else {
+            console.log("No API diff output found.");
+          }
         else
-          echo "No API diff output found."
-        fi
+          echo "No API diff output found. Exiting..."
+          exit 0
