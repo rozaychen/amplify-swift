@@ -42,14 +42,14 @@ jobs:
         git log -1  # Print the commit info for debugging
         swift build
         swift package describe
-        swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json"
+        swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
         swift build
         swift package describe
-        swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json"
+        swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug
         
         echo "Comparing APIs..."
         swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
