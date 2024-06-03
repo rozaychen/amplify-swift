@@ -8,7 +8,7 @@ on:
 jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout repository
