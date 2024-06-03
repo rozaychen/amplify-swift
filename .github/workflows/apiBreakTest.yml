@@ -14,7 +14,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Ensure a full fetch
+        fetch-depth: 0
 
     - name: Install Swift 5.9
       uses: swift-actions/setup-swift@v2
@@ -24,10 +24,10 @@ jobs:
     - name: Get Swift version
       run: swift --version
 
-    - name: Debug: Print Git Commit History
+    - name: Debug Print Git Commit History
       run: git log --oneline
 
-    - name: Debug: Print Git Branches
+    - name: Debug Print Git Branches
       run: git branch -a
 
     - name: Setup and Run Swift API Diff
