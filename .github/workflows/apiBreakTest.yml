@@ -21,15 +21,6 @@ jobs:
       with:
         swift-version: "5.9.0"
 
-    - name: Get Swift version
-      run: swift --version
-
-    - name: Debug Print Git Commit History
-      run: git log --oneline
-
-    - name: Debug Print Git Branches
-      run: git branch -a
-
     - name: Setup and Run Swift API Diff
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,12 +41,14 @@ jobs:
         git checkout ${{ github.event.pull_request.base.sha }}
         git log -1  # Print the commit info for debugging
         swift build
+        swift package describe
         swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json"
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
         swift build
+        swift package describe
         swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json"
         
         echo "Comparing APIs..."
