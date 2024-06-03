@@ -1,0 +1,27 @@
+name: Check for Deletions in API Dump
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check_deletions:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install jq
+
+    - name: Run check_deletions.sh
+      run: ./check_deletions.sh main ${{ github.head_ref }}
