@@ -8,11 +8,13 @@ on:
 jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Ensure a full fetch
 
     - name: Install Swift 5.9
       uses: swift-actions/setup-swift@v2
@@ -21,6 +23,12 @@ jobs:
 
     - name: Get Swift version
       run: swift --version
+
+    - name: Debug: Print Git Commit History
+      run: git log --oneline
+
+    - name: Debug: Print Git Branches
+      run: git branch -a
 
     - name: Setup and Run Swift API Diff
       env:
@@ -36,17 +44,22 @@ jobs:
         # Run swift-api-diff commands here directly
         OLD_API_DIR=$(mktemp -d)
         NEW_API_DIR=$(mktemp -d)
+        REPORT_DIR=$(mktemp -d)
 
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
+        git log -1  # Print the commit info for debugging
         swift build
-        swift api-digester -dump-sdk -module "Amplify -o "$OLD_API_DIR/old.json"
+        swift api-digester -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json"
+        
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
+        git log -1  # Print the commit info for debugging
         swift build
         swift api-digester -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json"
+        
         echo "Comparing APIs..."
-        swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
+        swift api-digester -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt"
 
     - name: Upload API Diff Report
       uses: actions/upload-artifact@v3
