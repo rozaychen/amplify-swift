@@ -15,13 +15,26 @@ jobs:
 
     - name: Set up Git
       run: |
+        echo "Setting up Git..."
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        
+
     - name: Set up environment
       run: |
+        echo "Setting up environment..."
         sudo apt-get update
-        sudo apt-get install jq
+        sudo apt-get install -y jq
+
+    - name: Debugging Show git version
+      run: git --version
+
+    - name: Debugging Show current branch
+      run: git branch -a
 
     - name: Run check_deletions.sh
-      run: ./check_deletions.sh main ${{ github.head_ref }}
+      run: |
+        echo "Running check_deletions.sh..."
+        ./check_deletions.sh main ${{ github.head_ref }}
+
+    - name: Debugging Show log of the current commit
+      run: git log -1
