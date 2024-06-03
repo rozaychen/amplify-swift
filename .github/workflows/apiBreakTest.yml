@@ -50,13 +50,11 @@ jobs:
         swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug || { echo "Failed to dump new SDK"; exit 1; }
         
         echo "Comparing APIs..."
-        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt" || { echo "Failed to compare APIs"; exit 1; }
+        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt
 
         # Capture the output for commenting
-        api_diff_output=$(cat "$REPORT_DIR/api-diff-report.txt")
-        echo "api_diff_output<<EOF" >> $GITHUB_ENV
-        echo "$api_diff_output" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+        api_diff_output=$(cat api-diff-report.txt)
+        echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
 
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
