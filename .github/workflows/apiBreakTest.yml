@@ -55,6 +55,7 @@ jobs:
         # Capture the output for commenting
         api_diff_output=$(cat api-diff-report.txt)
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        echo "🔀 Public API change detected" >> $GITHUB_ENV
         echo "$api_diff_output" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
