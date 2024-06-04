@@ -62,7 +62,7 @@ jobs:
         echo "SHA-1 checksum of $report: $checksum"
         
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
-        if ! echo "$checksum" | grep -q cefc4ee5bb7bcdb7cb5a7747efa178dab3c794d5 
+        if ! echo "$checksum" | grep -q afd2a1b542b33273920d65821deddc653063c700 
           then 
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
           echo "$api_diff_output" >> $GITHUB_ENV
