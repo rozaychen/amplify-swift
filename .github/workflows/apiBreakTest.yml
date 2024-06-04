@@ -55,7 +55,7 @@ jobs:
         # Capture the output for commenting
         api_diff_output=$(cat api-diff-report.txt)
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
-        if ! shasum "$report" | grep -q cefc4ee5bb7bcdb7cb5a7747efa178dab3c794d5; 
+        if ! shasum api-diff-report.txt | grep -q cefc4ee5bb7bcdb7cb5a7747efa178dab3c794d5; 
           then 
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
           echo "$api_diff_output" >> $GITHUB_ENV
