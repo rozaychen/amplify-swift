@@ -63,7 +63,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const github = require('@actions/github');
           const apiDiffOutput = process.env.API_DIFF_OUTPUT;
           const issueNumber = context.payload.pull_request.number;
           const owner = context.repo.owner;
