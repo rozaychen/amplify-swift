@@ -52,22 +52,30 @@ jobs:
         echo "Comparing APIs..."
         swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" -input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt 2>&1
 
-        # Debugging
-        ls -la  # List files in the current directory for debugging
-        cat api-diff-report.txt  # Output the contents of the API diff report file for debugging
-
+        # Capture the output for commenting
         api_diff_output=$(cat api-diff-report.txt)
-        echo "api_diff_output=$api_diff_output" >> $GITHUB_ENV
+        echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        echo "$api_diff_output" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
 
-        # Comment on PR with API Diff
-        if [[ $api_diff_output || $? -ne 0 ]]; then
-          echo "Posting API Diff report to PR..."
-          const issueNumber = ${{ github.event.pull_request.number }};
-          const owner = ${{ github.repository_owner }};
-          const repo = ${{ github.repository }};
-          const githubToken = ${{ secrets.GITHUB_TOKEN }};
-          curl -X POST -H "Authorization: token $githubToken" -H "Accept: application/vnd.github.v3+json" -d "{\"body\": \"### API Diff Report\n\`\`\`\n${api_diff_output}\n\`\`\`\"}" "https://api.github.com/repos/$owner/$repo/issues/$issueNumber/comments"
-        else
-          echo "No API diff output found. Exiting..."
-          exit 0
-        fi
+    - name: Comment on PR with API Diff
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const github = require('@actions/github');
+          const apiDiffOutput = process.env.API_DIFF_OUTPUT;
+          const issueNumber = context.payload.pull_request.number;
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+
+          if (apiDiffOutput && apiDiffOutput.trim().length > 0) {
+            github.rest.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: issueNumber,
+              body: `### API Diff Report\n\`\`\`\n${apiDiffOutput}\n\`\`\``
+            });
+          } else {
+            console.log("No API diff output found.");
+          }
