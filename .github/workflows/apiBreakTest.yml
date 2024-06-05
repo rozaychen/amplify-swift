@@ -35,6 +35,7 @@ jobs:
         # Run swift-api-diff commands here directly
         OLD_API_DIR=$(mktemp -d)
         NEW_API_DIR=$(mktemp -d)
+        REPORT_DIR=$(mktemp -d)
         SDK_PATH=$(xcrun --show-sdk-path)
 
         echo "Fetching old version..."
@@ -43,9 +44,9 @@ jobs:
         swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug || { echo "Failed to dump old SDK"; exit 1; }
         
         echo "Fetching new version..."
-        git checkout ${{ github.head_ref }}
+        git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
-        swift build > /dev/null 2>&1 || { echo "Failed to build new version"; exit 1; }
+        swift build> /dev/null 2>&1 || { echo "Failed to build new version"; exit 1; }
         swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug || { echo "Failed to dump new SDK"; exit 1; }
         
         echo "Comparing APIs..."
@@ -54,15 +55,20 @@ jobs:
         # Capture the output for commenting
         api_diff_output=$(cat api-diff-report.txt)
         
-        # Check for breaking changes
-        if echo "$api_diff_output" | grep -q "Breaking change"; then
-          echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        # Capture the SHA-1 checksum of the file
+        checksum=$(shasum api-diff-report.txt | awk '{ print $1 }')
+        
+        # Print the SHA-1 checksum
+        echo "SHA-1 checksum of $report: $checksum"
+        
+        echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        if ! echo "$checksum" | grep -q afd2a1b542b33273920d65821deddc653063c700 
+          then 
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
           echo "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
         else
-          echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
           echo "✅ No Public API Breaking Change detected" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
