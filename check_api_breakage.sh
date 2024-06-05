@@ -33,13 +33,13 @@ swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$NEW_API_DIR
 
 # Compare the APIs
 echo "Comparing APIs..."
-swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt 2>&1
+swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/old.json" --input-paths "$NEW_API_DIR/new.json" > "$REPORT_DIR/api-diff-report.txt" 2>&1
 
 # Capture the output for commenting
-api_diff_output=$(cat api-diff-report.txt)
+api_diff_output=$(cat "$REPORT_DIR/api-diff-report.txt")
 
 # Capture the SHA-1 checksum of the file
-checksum=$(shasum api-diff-report.txt | awk '{ print $1 }')
+checksum=$(shasum "$REPORT_DIR/api-diff-report.txt" | awk '{ print $1 }')
 if ! echo "$checksum" | grep -q afd2a1b542b33273920d65821deddc653063c700
   then
   echo "❌ Public API Breaking Change detected:"
