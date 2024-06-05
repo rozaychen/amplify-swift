@@ -109,5 +109,5 @@ jobs:
             owner: owner,
             repo: repo,
             pull_number: issueNumber,
-            reviewers: ["rozaychen"]
+            reviewers: ["rozayc"]
           });
