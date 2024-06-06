@@ -24,50 +24,54 @@ jobs:
 
         # Ensure we are in the correct directory
         cd $GITHUB_WORKSPACE
-
+        
         # Run swift-api-diff commands here directly
         NEW_API_DIR=$(mktemp -d)
         OLD_API_DIR=$(mktemp -d)
         SDK_PATH=$(xcrun --show-sdk-path)
 
+        # Get all library module names
+        modules=$(swift package dump-package | jq -r '.products | map(select(.type | has("library"))) | map(.name) | .[]')
+
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
-        
-        # Use the api-dump/Amplify.json file from the base branch directly
-        if [ ! -f api-dump/Amplify.json ]; then
-          echo "Old API file does not exist in the base branch"
-          exit 1
-        fi
-        OLD_API_FILE="$OLD_API_DIR/old.json"
-        cp api-dump/Amplify.json "$OLD_API_FILE"
-        if [ ! -f "$OLD_API_FILE" ]; then
-          echo "Old API file does not generated successfully"
-          exit 1
-        fi
+        for module in $modules; do
+          cp "api-dump/${module}.json" "$OLD_API_DIR/${module}.json"
+        done
+        # Use the api-dump/${module}.json file from the base branch directly
+        # if [ ! -f api-dump/${module}.json ]; then
+        #   echo "Old API file does not exist in the base branch"
+        #   exit 1
+        # fi
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
         git log -1  # Print the commit info for debugging
         swift build> /dev/null 2>&1 || { echo "Failed to build new version"; exit 1; }
-        swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$NEW_API_DIR/new.json" -I .build/debug || { echo "Failed to dump new SDK"; exit 1; }
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$NEW_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
+        done
         
-        echo "Comparing APIs..."
-        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_FILE" -input-paths "$NEW_API_DIR/new.json" > api-diff-report.txt 2>&1
-
-        # Capture the output for commenting
-        api_diff_output=$(cat api-diff-report.txt)
+        # Compare APIs for each module and capture the output
+        api_diff_output=""
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$')
+          if [ -n "$module_diff_output" ]; then
+            api_diff_output="${api_diff_output}\n### Module: ${module}\n${module_diff_output}\n"
+          fi
+        done
         
         # Capture the SHA-1 checksum of the file
-        checksum=$(shasum api-diff-report.txt | awk '{ print $1 }')
+        checksum=$(echo -n "$api_diff_output" | shasum | awk '{ print $1 }')
         
         # Print the SHA-1 checksum
-        echo "SHA-1 checksum of $report: $checksum"
+        echo "SHA-1 checksum of the API diff report: $checksum"
         
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
-        if ! echo "$checksum" | grep -q afd2a1b542b33273920d65821deddc653063c700 
-          then 
+        if [ -n "$api_diff_output" ]; then
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
-          echo "$api_diff_output" | grep -v '^/\*' | grep -v '^$' >> $GITHUB_ENV
+          echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
         else
@@ -75,18 +79,21 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
-
+        
         # Update the api-dump folder of the new version by making a commit
-        mv "$NEW_API_DIR/new.json" "api-dump/Amplify.json"
+        for module in $modules; do
+            mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
+        done
         
         # Checkout to the branch associated with the pull request
         git checkout ${{ github.head_ref }}
-
+        
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add api-dump/Amplify.json
-        git commit -m "Update API dump for new version"
+        git add api-dump/*.json
+        git commit -m "Update API dumps for new version"
         git push origin HEAD:${{ github.head_ref }}
+        
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
       with:
