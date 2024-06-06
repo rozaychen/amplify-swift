@@ -27,15 +27,21 @@ jobs:
 
         # Run swift-api-diff commands here directly
         NEW_API_DIR=$(mktemp -d)
+        OLD_API_DIR=$(mktemp -d)
         SDK_PATH=$(xcrun --show-sdk-path)
 
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
         
         # Use the api-dump/Amplify.json file from the base branch directly
-        OLD_API_FILE="api-dump/Amplify.json"
-        if [ ! -f "$OLD_API_FILE" ]; then
+        if [ ! -f api-dump/Amplify.json ]; then
           echo "Old API file does not exist in the base branch"
+          exit 1
+        fi
+        OLD_API_FILE="$OLD_API_DIR/old.json"
+        cp api-dump/Amplify.json "$OLD_API_FILE"
+        if [ ! -f "$OLD_API_FILE" ]; then
+          echo "Old API file does not generated successfully"
           exit 1
         fi
         
