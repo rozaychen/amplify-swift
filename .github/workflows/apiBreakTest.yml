@@ -2,9 +2,6 @@ name: "Solution1b"
 
 on:
   pull_request:
-    branches:
-      - main
-      - test-other-source-branch
 
 jobs:
   buildAndCheckAPIBreakage:
