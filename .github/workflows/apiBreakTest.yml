@@ -32,7 +32,8 @@ jobs:
 
         # Get all library module names
         modules=$(swift package dump-package | jq -r '.products | map(select(.type | has("library") and (.name == "Amplify" or .name == "CoreMLPredictionsPlugin"))) | map(.name) | .[]')
-
+        echo "Modules: $modules"
+        
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
         for module in $modules; do
@@ -56,7 +57,9 @@ jobs:
         api_diff_output=""
         for module in $modules; do
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          cat api-diff-report-${module}.txt
           module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$')
+          echo "$module_diff_output"
           if [ -n "$module_diff_output" ]; then
             api_diff_output="${api_diff_output}\n### Module: ${module}\n${module_diff_output}\n"
           fi
