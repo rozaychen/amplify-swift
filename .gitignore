@@ -82,4 +82,3 @@ GraphQLWithIAMIntegrationTests-credentials.json
 
 AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
 *.code-workspace
-api-diff-report.txt
