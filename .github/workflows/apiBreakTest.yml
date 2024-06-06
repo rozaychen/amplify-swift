@@ -31,7 +31,7 @@ jobs:
         SDK_PATH=$(xcrun --show-sdk-path)
 
         # Get all library module names
-        modules=$(swift package dump-package | jq -r '.products | map(select(.type | has("library") and (.name == "Amplify" or .name == "CoreMLPredictionsPlugin"))) | map(.name) | .[]')
+        modules=$(swift package dump-package | jq -r '.products | map(select(.name == "Amplify" or .name == "CoreMLPredictionsPlugin")) | map(.name) | .[]')
         echo "Modules: $modules"
         
         echo "Fetching old version..."
