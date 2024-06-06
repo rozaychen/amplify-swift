@@ -33,8 +33,13 @@ jobs:
 
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
-        swift build > /dev/null 2>&1 || { echo "Failed to build old version"; exit 1; }
-        swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "Amplify" -o "$OLD_API_DIR/old.json" -I .build/debug || { echo "Failed to dump old SDK"; exit 1; }
+        
+        # Use the api-dump/Amplify.json file from the base branch directly
+        OLD_API_FILE="api-dump/Amplify.json"
+        if [ ! -f "$OLD_API_FILE" ]; then
+          echo "Old API file does not exist in the base branch"
+          exit 1
+        fi
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
@@ -66,6 +71,13 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
+
+        # Update the api-dump folder of the new version by making a commit
+        mv "$NEW_API_DIR/new.json" "api-dump/Amplify.json"
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add api-dump/Amplify.json
+        git commit -m "Update API dump for new version"
 
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
