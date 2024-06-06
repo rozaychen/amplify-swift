@@ -1,0 +1,21 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "json_format_version": 8,
+    "tool_arguments": [
+      "-sdk",
+      "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX.sdk",
+      "-dump-sdk",
+      "-module",
+      "AWSPinpointAnalyticsPlugin",
+      "-o",
+      ".\/api-dump\/AWSPinpointAnalyticsPlugin.json",
+      "-I",
+      ".build\/debug",
+      "-sdk-version",
+      "23E208"
+    ]
+  }
+}
