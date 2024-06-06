@@ -58,7 +58,7 @@ jobs:
         if ! echo "$checksum" | grep -q afd2a1b542b33273920d65821deddc653063c700 
           then 
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
-          echo "$api_diff_output" | grep -v '^/\*' >> $GITHUB_ENV
+          echo grep -v '^/\*' "$api_diff_output" | grep -v '^$' >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
         else
