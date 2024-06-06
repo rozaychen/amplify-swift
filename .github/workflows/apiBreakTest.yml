@@ -80,19 +80,27 @@ jobs:
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
         
-        # Update the api-dump folder of the new version by making a commit
+        # Update the api-dump folder of the new version by making a commit if there are changes
         for module in $modules; do
-            mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
+            if ! diff "$NEW_API_DIR/${module}.json" "api-dump/${module}.json" > /dev/null; then
+                mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
+            fi
         done
-        
+
         # Checkout to the branch associated with the pull request
         git checkout ${{ github.head_ref }}
-        
+
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add api-dump/*.json
-        git commit -m "Update API dumps for new version"
-        git push origin HEAD:${{ github.head_ref }}
+
+        # Check if there are changes in the api-dump folder
+        if ! git diff --quiet --exit-code -- api-dump/*.json; then
+            git add api-dump/*.json
+            git commit -m "Update API dumps for new version"
+            git push origin HEAD:${{ github.head_ref }}
+        else
+            echo "No changes to commit in the api-dump folder."
+        fi
         
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
