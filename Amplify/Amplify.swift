@@ -29,6 +29,7 @@ public class Amplify {
     static var isConfigured = false
     
     public static var testBreak: Float = 2.0
+    public static var testBreak2: Float = 3.0
     public func testAPIBreakage(oldVersion: Int, newVersion: Int) -> Bool {
         return oldVersion>newVersion
     }
