@@ -12,14 +12,9 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         fetch-depth: 0
-
-    - name: Install Swift 5.9
-      uses: swift-actions/setup-swift@v2
-      with:
-        swift-version: "5.9.0"
 
     - name: Setup and Run Swift API Diff
       env:
