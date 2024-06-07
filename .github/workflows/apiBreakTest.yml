@@ -64,7 +64,7 @@ jobs:
             api_diff_output="${api_diff_output}\n### Module: ${module}\n${module_diff_output}\n"
           fi
         done
-        
+        echo "Generating report..."
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
