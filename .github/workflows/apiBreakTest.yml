@@ -65,12 +65,6 @@ jobs:
           fi
         done
         
-        # Capture the SHA-1 checksum of the file
-        checksum=$(echo -n "$api_diff_output" | shasum | awk '{ print $1 }')
-        
-        # Print the SHA-1 checksum
-        echo "SHA-1 checksum of the API diff report: $checksum"
-        
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
           echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
