@@ -59,17 +59,17 @@ jobs:
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
           module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' || true)
           if [ -n "$module_diff_output" ]; then
-            api_diff_output="${api_diff_output}\nModule: ${module}\n${module_diff_output}\n"
+            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
           fi
         done
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
-          echo "💔 Public API Breaking Change detected:" >> $GITHUB_ENV
+          echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
           echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
         else
-          echo "✅ No Public API Breaking Change detected" >> $GITHUB_ENV
+          echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
@@ -111,7 +111,7 @@ jobs:
               owner: owner,
               repo: repo,
               issue_number: issueNumber,
-              body: `### API Breakage Report\n\`\`\`\n${apiDiffOutput}\n\`\`\``
+              body: `## API Breakage Report\n---\n\`\`\`\n${apiDiffOutput}\n\`\`\``
             });
           } else {
             console.log("No API diff output found.");
