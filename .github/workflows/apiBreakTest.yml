@@ -111,7 +111,7 @@ jobs:
               owner: owner,
               repo: repo,
               issue_number: issueNumber,
-              body: `## API Breakage Report\n---\n${apiDiffOutput}\n`
+              body: `## API Breakage Report\n${apiDiffOutput}\n`
             });
           } else {
             console.log("No API diff output found.");
