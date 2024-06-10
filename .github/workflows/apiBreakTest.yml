@@ -59,7 +59,7 @@ jobs:
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
           module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' || true)
           if [ -n "$module_diff_output" ]; then
-            api_diff_output="${api_diff_output}\n### Module: ${module}\n${module_diff_output}\n"
+            api_diff_output="${api_diff_output}\nModule: ${module}\n${module_diff_output}\n"
           fi
         done
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
