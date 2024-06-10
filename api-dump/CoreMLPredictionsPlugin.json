@@ -150,14 +150,14 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
+                "name": "Float",
+                "printedName": "Swift.Float",
+                "usr": "s:Sf"
               }
             ],
             "declKind": "Var",
-            "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivp",
-            "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivp",
+            "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSfvp",
+            "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSfvp",
             "moduleName": "CoreMLPredictionsPlugin",
             "declAttributes": [
               "HasInitialValue",
@@ -173,14 +173,14 @@
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
+                    "name": "Float",
+                    "printedName": "Swift.Float",
+                    "usr": "s:Sf"
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivg",
-                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivg",
+                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSfvg",
+                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSfvg",
                 "moduleName": "CoreMLPredictionsPlugin",
                 "implicit": true,
                 "declAttributes": [
@@ -201,14 +201,14 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
+                    "name": "Float",
+                    "printedName": "Swift.Float",
+                    "usr": "s:Sf"
                   }
                 ],
                 "declKind": "Accessor",
-                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivs",
-                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivs",
+                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSfvs",
+                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSfvs",
                 "moduleName": "CoreMLPredictionsPlugin",
                 "implicit": true,
                 "declAttributes": [
@@ -513,7 +513,7 @@
       "-module",
       "CoreMLPredictionsPlugin",
       "-o",
-      "\/var\/folders\/lr\/439_fwvd3m76p9vy50d57kcc0000gn\/T\/tmp.pxRis2SeiS\/CoreMLPredictionsPlugin.json",
+      "\/var\/folders\/lr\/439_fwvd3m76p9vy50d57kcc0000gn\/T\/tmp.4uKj3WbAXr\/CoreMLPredictionsPlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
