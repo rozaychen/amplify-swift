@@ -51,7 +51,7 @@ for module in $modules; do
   swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" > "$REPORT_DIR/api-diff-report.txt" 2>&1
   module_diff_output=$(grep -v '^/\*' "$REPORT_DIR/api-diff-report.txt" | grep -v '^$' || true)
   if [ -n "$module_diff_output" ]; then
-    api_diff_output="${api_diff_output}\n### Module: ${module}\n${module_diff_output}\n"
+    api_diff_output=$(printf "%s\n### Module: %s\n%s\n" "$api_diff_output" "$module" "$module_diff_output")
   fi
 done
 
