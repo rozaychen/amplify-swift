@@ -27,6 +27,13 @@
       },
       {
         "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "CoreMLPredictionsPlugin"
+      },
+      {
+        "kind": "Import",
         "name": "NaturalLanguage",
         "printedName": "NaturalLanguage",
         "declKind": "Import",
@@ -133,6 +140,82 @@
                   "Final"
                 ],
                 "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "testMLBreak",
+            "printedName": "testMLBreak",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivp",
+            "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivp",
+            "moduleName": "CoreMLPredictionsPlugin",
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivg",
+                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivg",
+                "moduleName": "CoreMLPredictionsPlugin",
+                "implicit": true,
+                "declAttributes": [
+                  "Transparent",
+                  "Final"
+                ],
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:23CoreMLPredictionsPluginAAC11testMLBreakSivs",
+                "mangledName": "$s23CoreMLPredictionsPluginAAC11testMLBreakSivs",
+                "moduleName": "CoreMLPredictionsPlugin",
+                "implicit": true,
+                "declAttributes": [
+                  "Transparent",
+                  "Final"
+                ],
+                "accessorKind": "set"
               }
             ]
           },
@@ -425,16 +508,16 @@
     "json_format_version": 8,
     "tool_arguments": [
       "-sdk",
-      "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX.sdk",
+      "\/Applications\/Xcode_15.0.1.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
       "-dump-sdk",
       "-module",
       "CoreMLPredictionsPlugin",
       "-o",
-      ".\/api-dump\/CoreMLPredictionsPlugin.json",
+      "\/var\/folders\/lr\/439_fwvd3m76p9vy50d57kcc0000gn\/T\/tmp.pxRis2SeiS\/CoreMLPredictionsPlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
-      "23E208"
+      "23A334"
     ]
   }
 }
