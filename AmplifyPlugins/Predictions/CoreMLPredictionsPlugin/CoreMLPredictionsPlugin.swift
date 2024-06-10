@@ -27,7 +27,7 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
     public var key: PluginKey {
         return coreMLPredictionsPluginKey
     }
-    public var testMLBreak: Float = 4.0
+    public var testMLBreak: Int = 4
     public init() {
     }
 }
