@@ -64,7 +64,7 @@ jobs:
         done
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
-          echo "❌ Public API Breaking Change detected:" >> $GITHUB_ENV
+          echo "💔 Public API Breaking Change detected:" >> $GITHUB_ENV
           echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
