@@ -120,7 +120,13 @@ public class TestClass{
         return oldVersion>newVersion-optionalVersion
     }
 }
-public class SubTestClass: TestClass{
+public class TestClass2{
+    internal static var testBreak: Int = 3
+    public func testAPIBreakage(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+        return oldVersion-newVersion>optionalVersion
+    }
+}
+public class SubTestClass: TestClass2{
     public override func testAPIBreakage(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion+optionalVersion
     }
