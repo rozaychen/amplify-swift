@@ -125,6 +125,19 @@ public class SubTestClass: TestClass{
         return oldVersion>newVersion+optionalVersion
     }
 }
+public class Box<T> {
+    public var value: T
+
+    public init(value: T) {
+        self.value = value
+    }
+
+    public func getValue() -> T {
+        return value
+    }
+}
+
+
 
 extension Amplify: DefaultLogger {
     public static var log: Logger {
