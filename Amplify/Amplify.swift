@@ -137,7 +137,17 @@ public class Box<T> {
     }
 }
 
-
+public enum Direction {
+    case north
+    case south
+    case east
+    case west
+}
+public enum HTTPStatusCode: Int {
+    case ok = 200
+    case notFound = 404
+    case internalServerError = 500
+}
 
 extension Amplify: DefaultLogger {
     public static var log: Logger {
