@@ -148,6 +148,7 @@ public enum HTTPStatusCode: Int {
     case notFound = 404
     case internalServerError = 500
 }
+
 protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
