@@ -140,8 +140,8 @@ public class Box<T> {
 public enum Direction {
     case north
     case south
-    case east
-    case west
+    case up
+    case down
 }
 public enum HTTPStatusCode: Int {
     case ok = 200
