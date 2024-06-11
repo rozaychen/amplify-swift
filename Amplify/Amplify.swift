@@ -28,7 +28,7 @@ public class Amplify {
     /// - Tag: Amplify.isConfigured
     static var isConfigured = false
     
-    public static var testBreak1: Int = 4
+    internal static var testBreak1: Int = 4
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion-optionalVersion
     }
