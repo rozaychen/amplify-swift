@@ -29,8 +29,8 @@ public class Amplify {
     static var isConfigured = false
     
     public static var testBreak1: Int = 4
-    public func testAPIBreakage(oldVersion: Int, newVersion: Int) -> Bool {
-        return oldVersion>newVersion
+    public func testAPIBreakage(oldVersion: Int, newVersion: Int) -> Int {
+        return oldVersion-newVersion
     }
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
