@@ -114,7 +114,7 @@ public class Amplify {
     }
 }
 
-public class TestClass{
+public class TestClassChange{
     internal static var testBreak: Int = 4
     public func testAPIBreakage(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion-optionalVersion
