@@ -125,7 +125,7 @@ public class SubTestClass: TestClass{
         return oldVersion>newVersion+optionalVersion
     }
 }
-public class Box<T> {
+public class Box<T: Numeric> {
     public var value: T
 
     public init(value: T) {
