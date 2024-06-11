@@ -148,6 +148,17 @@ public enum HTTPStatusCode: Int {
     case notFound = 404
     case internalServerError = 501
 }
+public class Person {
+    let firstName: String
+    let lastName: String
+    let PI: Double
+    
+    init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.PI = 3.14159265358979323846264338
+    }
+}
 protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
