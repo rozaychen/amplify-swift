@@ -136,17 +136,6 @@ public class Box<T: Numeric> {
         return value
     }
 }
-public enum Direction {
-    case north
-    case south
-    case east
-    case west
-}
-public enum HTTPStatusCode: Int {
-    case ok = 200
-    case notFound = 404
-    case internalServerError = 500
-}
 
 
 
