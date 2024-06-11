@@ -114,6 +114,13 @@ public class Amplify {
     }
 }
 
+public class TestClass{
+    internal static var testBreak: Int = 4
+    public func testAPIBreakage(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+        return oldVersion>newVersion-optionalVersion
+    }
+}
+
 extension Amplify: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: String(describing: self))
