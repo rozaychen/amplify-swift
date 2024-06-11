@@ -146,7 +146,7 @@ public enum Direction {
 public enum HTTPStatusCode: Int {
     case ok = 200
     case notFound = 404
-    case internalServerError = 500
+    case internalServerError = 501
 }
 protocol TestProtocol {
     associatedtype Item
