@@ -32,7 +32,7 @@ public class Amplify {
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion-optionalVersion
     }
-    func fetchData(completion: (Int) -> Void) {
+    public func fetchData(completion: (Int) -> Void) {
         // Fetching data...
         let result = 42
         completion(result)
@@ -169,6 +169,19 @@ public protocol TestProtocol {
     var items: [Item] { get set }
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
+}
+@propertyWrapper
+public struct Trimmed {
+    private(set) var value: String = ""
+
+    public var wrappedValue: String {
+        get { value }
+        set { value = newValue.trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+
+    public init(wrappedValue initialValue: String) {
+        self.wrappedValue = initialValue
+    }
 }
 
 extension Amplify: DefaultLogger {
