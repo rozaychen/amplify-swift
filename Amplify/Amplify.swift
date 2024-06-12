@@ -157,11 +157,13 @@ public class Person {
     public let firstName: String
     public let lastName: String
     public let PI: Double
+    public let age: Int
     
-    public init(firstName: String, lastName: String) {
+    public init(firstName: String, lastName: String, age: Int) {
         self.firstName = firstName
         self.lastName = lastName
         self.PI = 3.14159265358979323846264338
+        self.age = age
     }
 }
 public protocol TestProtocol {
