@@ -32,6 +32,9 @@ public class Amplify {
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion-optionalVersion
     }
+    public func testAPIBreakageNameChange2(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+        return oldVersion>newVersion-optionalVersion
+    }
     public func fetchData(completion: (Int) -> Void) {
         // Fetching data...
         let result = 42
