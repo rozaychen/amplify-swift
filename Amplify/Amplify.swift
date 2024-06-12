@@ -153,6 +153,8 @@ public enum HTTPStatusCode: Int {
     case notFound = 404
     case internalServerError = 501
 }
+
+@_spi(InternalAmplifyConfiguration)
 public class Person {
     public let firstName: String
     public let lastName: String
@@ -164,6 +166,7 @@ public class Person {
         self.PI = 3.14159265358979323846264338
     }
 }
+
 public protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
