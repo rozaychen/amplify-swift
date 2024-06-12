@@ -119,6 +119,7 @@ public enum Direction: String {
     case south = "S"
     case east = "E"
     case west = "W"
+    case test = "X"
 }
 
 extension Amplify: DefaultLogger {
