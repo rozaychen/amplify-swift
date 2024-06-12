@@ -164,12 +164,15 @@ public class Person {
         self.PI = 3.14159265358979323846264338
     }
 }
+
+@available(*, deprecated, message: "Use NewTestProtocol instead")
 public protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
 }
+
 @propertyWrapper
 public struct Trimmed {
     private(set) var value: String = ""
