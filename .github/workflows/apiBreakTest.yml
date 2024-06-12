@@ -73,6 +73,10 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
+
+        # Checkout to the branch associated with the pull request
+        git stash --include-untracked
+        git checkout ${{ github.head_ref }}
         
         # Update the api-dump folder of the new version by making a commit if there are changes
         for module in $modules; do
@@ -80,9 +84,6 @@ jobs:
                 mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
             fi
         done
-
-        # Checkout to the branch associated with the pull request
-        git checkout ${{ github.head_ref }}
 
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -95,6 +96,8 @@ jobs:
         else
             echo "No changes to commit in the api-dump folder."
         fi
+
+        git stash pop || true
         
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
