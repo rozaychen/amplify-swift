@@ -162,6 +162,7 @@ public class Person {
 public protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
+    var manufacturer: String { get } // New required property
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
 }
