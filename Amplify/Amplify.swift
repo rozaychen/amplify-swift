@@ -149,11 +149,11 @@ public enum HTTPStatusCode: Int {
     case internalServerError = 501
 }
 public class Person {
-    let firstName: String
-    let lastName: String
-    let PI: Double
+    public let firstName: String
+    public let lastName: String
+    public let PI: Double
     
-    init(firstName: String, lastName: String) {
+    public init(firstName: String, lastName: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.PI = 3.14159265358979323846264338
