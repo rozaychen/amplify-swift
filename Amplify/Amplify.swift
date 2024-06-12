@@ -158,9 +158,16 @@ public class Person {
     public let lastName: String
     public let PI: Double
     
+    @available(*, deprecated, message: "Use init() instead")
     public init(firstName: String, lastName: String) {
         self.firstName = firstName
         self.lastName = lastName
+        self.PI = 3.14159265358979323846264338
+    }
+    
+    public init() {
+        self.firstName = "Unknown"
+        self.lastName = "Unknown"
         self.PI = 3.14159265358979323846264338
     }
 }
