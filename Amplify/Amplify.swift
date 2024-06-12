@@ -125,7 +125,7 @@ public class TestClass{
         return oldVersion>newVersion-optionalVersion
     }
 }
-public typealias UserName = Int
+public typealias UserName = Double
 public class SubTestClass: TestClass{
     public override func testAPIBreakage(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion+optionalVersion
