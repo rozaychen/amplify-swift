@@ -160,8 +160,8 @@ public class Person {
     }
 }
 public protocol TestProtocol {
-    associatedtype Item
-    var items: [Item] { get set }
+    associatedtype Element
+    var items: [Element] { get set }
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
 }
