@@ -67,7 +67,7 @@ jobs:
                 renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
             
                 # Append a message to the module_diff_output
-                api_diff_output="${api_diff_output}_Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
             fi
           fi
         done
