@@ -164,6 +164,7 @@ protocol TestProtocol {
     var items: [Item] { get set }
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
+    func readMessage(id: Int) -> String // New method added
 }
 
 extension Amplify: DefaultLogger {
