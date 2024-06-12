@@ -36,14 +36,25 @@ jobs:
         
         echo "Fetching old version..."
         git checkout ${{ github.event.pull_request.base.sha }}
+        built=false
         for module in $modules; do
-          cp "api-dump/${module}.json" "$OLD_API_DIR/${module}.json"
+          # If file doesn't exits in the old directory
+          if [ ! -f api-dump/${module}.json ]; then
+            echo "Old API file does not exist in the base branch. Generating it..."
+            # Check if the project has been built
+            if ! $built; then
+              echo "Building project..."
+              swift build > /dev/null 2>&1 || { echo "Failed to build project"; exit 1; }
+              built=true 
+            fi
+              
+            # Generate the API file using api-digester
+            swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$OLD_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
+          else
+            # Use the api-dump/${module}.json file from the base branch directly
+            cp "api-dump/${module}.json" "$OLD_API_DIR/${module}.json"
+          fi
         done
-        # Use the api-dump/${module}.json file from the base branch directly
-        # if [ ! -f api-dump/${module}.json ]; then
-        #   echo "Old API file does not exist in the base branch"
-        #   exit 1
-        # fi
         
         echo "Fetching new version..."
         git checkout ${{ github.sha }}
@@ -57,9 +68,18 @@ jobs:
         api_diff_output=""
         for module in $modules; do
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' || true)
+          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' | grep -v 'has been added as a new enum case$' | grep -v 'is now with @_spi$' || true)
           if [ -n "$module_diff_output" ]; then
             api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+            
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
           fi
         done
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
@@ -73,6 +93,10 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
           echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
+
+        # Checkout to the branch associated with the pull request
+        git stash --include-untracked
+        git checkout ${{ github.head_ref }}
         
         # Update the api-dump folder of the new version by making a commit if there are changes
         for module in $modules; do
@@ -80,9 +104,6 @@ jobs:
                 mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
             fi
         done
-
-        # Checkout to the branch associated with the pull request
-        git checkout ${{ github.head_ref }}
 
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -95,6 +116,8 @@ jobs:
         else
             echo "No changes to commit in the api-dump folder."
         fi
+
+        git stash pop || true
         
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
