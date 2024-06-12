@@ -151,12 +151,12 @@ public enum HTTPStatusCode: Int {
 public class Person {
     let firstName: String
     let lastName: String
-    let PI: Double
+    let PI_VALUE: Double
     
     init(firstName: String, lastName: String) {
         self.firstName = firstName
         self.lastName = lastName
-        self.PI = 3.14159265358979323846264338
+        self.PI_VALUE = 3.14159265358979323846264338
     }
 }
 public protocol TestProtocol {
