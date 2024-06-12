@@ -170,6 +170,12 @@ public protocol TestProtocol {
     func sendMessage(to recipient: String, content: String)
     func receiveMessage(from sender: String) -> String
 }
+
+extension TestProtocol {
+    func someDefaultMethod() {
+        print("Default implementation of someDefaultMethod()")
+    }
+}
 @propertyWrapper
 public struct Trimmed {
     private(set) var value: String = ""
