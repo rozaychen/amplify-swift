@@ -114,6 +114,13 @@ public class Amplify {
     }
 }
 
+public enum Direction: String {
+    case north = "North"  // Breaking change
+    case south = "S"
+    case east = "E"
+    case west = "W"
+}
+
 extension Amplify: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: String(describing: self))

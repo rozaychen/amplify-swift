@@ -57,9 +57,18 @@ jobs:
         api_diff_output=""
         for module in $modules; do
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' || true)
+          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' | grep -v 'has been added as a new enum case$' | grep -v 'is now with @_spi$' || true)
           if [ -n "$module_diff_output" ]; then
             api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+            
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
           fi
         done
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
