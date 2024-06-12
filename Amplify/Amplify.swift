@@ -32,6 +32,11 @@ public class Amplify {
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
         return oldVersion>newVersion-optionalVersion
     }
+    func fetchData(completion: (Int) -> Void) {
+        // Fetching data...
+        let result = 42
+        completion(result)
+    }
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
     // ease of testing.
