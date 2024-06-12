@@ -142,12 +142,14 @@ public class Box<T> {
     }
 }
 
+@available(*, deprecated, message: "Use NewDirection instead")
 public enum Direction {
     case north
     case south
     case east
     case west
 }
+
 public enum HTTPStatusCode: Int {
     case ok = 200
     case notFound = 404
