@@ -159,7 +159,7 @@ public class Person {
         self.PI = 3.14159265358979323846264338
     }
 }
-protocol TestProtocol {
+public protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
     func sendMessage(to recipient: String, content: String)
