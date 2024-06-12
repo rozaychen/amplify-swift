@@ -29,6 +29,8 @@ public class Amplify {
     static var isConfigured = false
     
     public static var testBreak1: Int = 4
+    
+    @_spi(InternalAmplifyConfiguration)
     public func testAPIBreakage(oldVersion: Int, newVersion: Int) -> Bool {
         return oldVersion>newVersion
     }
