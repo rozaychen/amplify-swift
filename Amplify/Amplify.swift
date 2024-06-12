@@ -164,6 +164,15 @@ public class Person {
         self.PI = 3.14159265358979323846264338
     }
 }
+public extension Person {
+    var fullName: String {
+        return "\(firstName) \(lastName)"
+    }
+    
+    func greet() {
+        print("Hello, \(fullName)!")
+    }
+}
 public protocol TestProtocol {
     associatedtype Item
     var items: [Item] { get set }
