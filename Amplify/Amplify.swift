@@ -29,7 +29,7 @@ public class Amplify {
     static var isConfigured = false
     
     public static var testBreak1: Int = 4
-    public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+    public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int) -> Bool {
         return oldVersion>newVersion-optionalVersion
     }
     public func fetchData(completion: (Int) -> Void) {
