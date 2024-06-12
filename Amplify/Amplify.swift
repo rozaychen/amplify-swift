@@ -153,7 +153,7 @@ public enum HTTPStatusCode: Int {
     case notFound = 404
     case internalServerError = 501
 }
-public class Person {
+public final class Person {
     public let firstName: String
     public let lastName: String
     public let PI: Double
