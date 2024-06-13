@@ -9,27 +9,93 @@
         "name": "Foundation",
         "printedName": "Foundation",
         "declKind": "Import",
-        "moduleName": "CoreMLPredictionsPlugin"
+        "moduleName": "DigesterTest"
       },
       {
         "kind": "TypeDecl",
         "name": "DigesterTest",
         "printedName": "DigesterTest",
         "children": [
-          {
-            "kind": "Var",
-            "name": "testVar",
-            "printedName": "testVar",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Float",
-                "printedName": "Swift.Float",
-                "usr": "s:Sf"
-              }
-            ]
-          }
-        ],
+            {
+              "kind": "Var",
+              "name": "testVar",
+              "printedName": "testVar",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Var",
+              "usr": "s:7DigesterTestAAC10testVarSfvpZ",
+              "mangledName": "$s7DigesterTestAAC10testVarSfvpZ",
+              "moduleName": "DigesterTest",
+              "static": true,
+              "declAttributes": [
+                "HasInitialValue",
+                "Final",
+                "HasStorage"
+              ],
+              "hasStorage": true,
+              "accessors": [
+                {
+                  "kind": "Accessor",
+                  "name": "Get",
+                  "printedName": "Get()",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Float",
+                      "printedName": "Swift.Float",
+                      "usr": "s:Sf"
+                    }
+                  ],
+                  "declKind": "Accessor",
+                  "usr": "s:7DigesterTestAAC10testVarSfvgZ",
+                  "mangledName": "$s7DigesterTestAAC10testVarSfvgZ",
+                  "moduleName": "DigesterTest",
+                  "static": true,
+                  "implicit": true,
+                  "declAttributes": [
+                    "Transparent",
+                    "Final"
+                  ],
+                  "accessorKind": "get"
+                },
+                {
+                  "kind": "Accessor",
+                  "name": "Set",
+                  "printedName": "Set()",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Void",
+                      "printedName": "()"
+                    },
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Float",
+                      "printedName": "Swift.Float",
+                      "usr": "s:Sf"
+                    }
+                  ],
+                  "declKind": "Accessor",
+                  "usr": "s:7DigesterTestAAC10testVarSfvsZ",
+                  "mangledName": "$s7DigesterTestAAC10testVarSfvsZ",
+                  "moduleName": "DigesterTest",
+                  "static": true,
+                  "implicit": true,
+                  "declAttributes": [
+                    "Transparent",
+                    "Final"
+                  ],
+                  "accessorKind": "set"
+                }
+              ]
+            }
+        ]
       }
     ],
     "json_format_version": 8,
