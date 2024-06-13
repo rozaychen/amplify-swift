@@ -2,7 +2,8 @@ name: Swift API Digester Check
 
 on:
   schedule:
-    - cron: '0 0 * * *' # This will run the action every night at midnight
+    - cron: '35 16 * * *' # This will run the action every night at midnight
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   check-swift-api-digester:
@@ -15,10 +16,17 @@ jobs:
         fetch-depth: 0
 
 
-    - name: Check swift-api-digester diagnose-sdk
+    - name: Check API Dihester
       run: |
         TEMP_DIR=$(mktemp -d)
-        swift-api-digester -sdk "$(xcrun --sdk macosx --show-sdk-path)" -diagnose-sdk --input-paths api-dump-test/A.json --input-paths api-dump-test/B.json > "$TEMP_DIR/api-digester-output.txt" 2>&1
+        echo "Temporary directory created at $TEMP_DIR"
+        SDK_PATH=$(xcrun --sdk macosx --show-sdk-path)
+        echo "SDK Path: $SDK_PATH"
+        
+        # Run swift-api-digester
+        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths api-dump-test/A.json --input-paths api-dump-test/B.json >> "$TEMP_DIR/api-digester-output.txt" 2>&1
+          
+        # Display the output
         cat "$TEMP_DIR/api-digester-output.txt"
         
         if diff "$TEMP_DIR/api-digester-output.txt" api-dump-test/expected-result.txt; then
