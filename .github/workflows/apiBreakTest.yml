@@ -1,4 +1,4 @@
-name: "Solution1b"
+name: "Check API Breakage"
 
 on:
   pull_request:
