@@ -36,7 +36,11 @@
               "declAttributes": [
                 "HasInitialValue",
                 "Final",
+                "SPIAccessControl",
                 "HasStorage"
+              ],
+              "spi_group_names": [
+                "InternalAmplifyConfiguration"
               ],
               "hasStorage": true,
               "accessors": [
