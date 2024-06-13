@@ -2,7 +2,7 @@ name: Swift API Digester Check
 
 on:
   schedule:
-    - cron: '0 * * * *' # This will run the action every night at midnight
+    - cron: '25 16 * * *' # This will run the action every night at midnight
 
 jobs:
   check-swift-api-digester:
