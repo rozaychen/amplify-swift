@@ -111,6 +111,7 @@ jobs:
               echo "{}" > "api-dump/${module}.json"
             fi
             if ! diff "$NEW_API_DIR/${module}.json" "api-dump/${module}.json" > /dev/null; then
+                echo "Updating API Dumps..."
                 mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
             fi
         done
