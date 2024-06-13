@@ -8212,7 +8212,7 @@
       "-module",
       "AWSDataStorePlugin",
       "-o",
-      "\/var\/folders\/dm\/88b38gj92jj53dgxdsm12qf00000gn\/T\/tmp.NF0G474dUc\/AWSDataStorePlugin.json",
+      "\/var\/folders\/dm\/88b38gj92jj53dgxdsm12qf00000gn\/T\/tmp.YCFYq0lvUO\/AWSDataStorePlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
