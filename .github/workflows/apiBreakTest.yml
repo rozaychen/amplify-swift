@@ -122,11 +122,13 @@ jobs:
         # Check if there are changes in the api-dump folder
         # if ! git diff --quiet --exit-code -- api-dump/*.json; then
         git add api-dump/*.json
-        git commit -m "Update API dumps for new version"
-        git push origin HEAD:${{ github.head_ref }}
-        # else
-            # echo "No changes to commit in the api-dump folder."
-        # fi
+
+        if ! git diff --cached --quiet --exit-code; then
+          git commit -m "Update API dumps for new version"
+          git push origin HEAD:${{ github.head_ref }}
+        else
+          echo "No changes to commit in the api-dump folder."
+        fi
 
         git stash pop || true
         
