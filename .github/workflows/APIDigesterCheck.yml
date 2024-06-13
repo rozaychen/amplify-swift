@@ -24,7 +24,7 @@ jobs:
         echo "SDK Path: $SDK_PATH"
         
         # Run swift-api-digester
-        swift-api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths api-dump-test/A.json --input-paths api-dump-test/B.json > "$TEMP_DIR/api-digester-output.txt" 2>&1
+        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths api-dump-test/A.json --input-paths api-dump-test/B.json >> "$TEMP_DIR/api-digester-output.txt" 2>&1
           
         # Display the output
         cat "$TEMP_DIR/api-digester-output.txt"
