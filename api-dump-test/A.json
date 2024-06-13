@@ -1,0 +1,50 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "CoreMLPredictionsPlugin"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "DigesterTest",
+        "printedName": "DigesterTest",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "testVar",
+            "printedName": "testVar",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Float",
+                "printedName": "Swift.Float",
+                "usr": "s:Sf"
+              }
+            ]
+          }
+        ],
+      }
+    ],
+    "json_format_version": 8,
+    "tool_arguments": [
+      "-sdk",
+      "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX.sdk",
+      "-dump-sdk",
+      "-module",
+      "DigesterTest",
+      "-o",
+      ".\/api-dump-test\/DigesterTest.json",
+      "-I",
+      ".build\/debug",
+      "-sdk-version",
+      "23E208"
+    ]
+  }
+}

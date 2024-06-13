@@ -1,0 +1,26 @@
+/* Generic Signature Changes */
+
+/* RawRepresentable Changes */
+
+/* Removed Decls */
+
+/* Moved Decls */
+
+/* Renamed Decls */
+
+/* Type Changes */
+Accessor DigesterTest.testVar.Get() has return type change from Swift.Int to Swift.Float
+Accessor DigesterTest.testVar.Set() has parameter 0 type change from Swift.Int to Swift.Float
+Var DigesterTest.testVar has declared type change from Swift.Int to Swift.Float
+
+/* Decl Attribute changes */
+
+/* Fixed-layout Type Changes */
+
+/* Protocol Conformance Change */
+
+/* Protocol Requirement Change */
+
+/* Class Inheritance Change */
+
+/* Others */
