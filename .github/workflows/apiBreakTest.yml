@@ -97,9 +97,19 @@ jobs:
         # Checkout to the branch associated with the pull request
         git stash --include-untracked
         git checkout ${{ github.head_ref }}
+
+        if [ ! -d "api-dump" ]; then
+            echo "api-dump folder does not exist. Creating it..."
+            mkdir -p "api-dump"
+        fi
         
         # Update the api-dump folder of the new version by making a commit if there are changes
         for module in $modules; do
+            # if [ ! -f api-dump/${module}.json ]; then
+              # echo "Old API file does not exist in the base branch. Generating it..."
+              # Create an empty JSON file
+              # echo "{}" > "api-dump/${module}.json"
+            # fi
             if ! diff "$NEW_API_DIR/${module}.json" "api-dump/${module}.json" > /dev/null; then
                 mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
             fi
