@@ -26,6 +26,7 @@ public class Amplify {
     /// ConfigurationError.amplifyAlreadyConfigured error.
     ///
     /// - Tag: Amplify.isConfigured
+    public var test1: Int = 5
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
