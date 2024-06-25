@@ -137,9 +137,7 @@ jobs:
               # Get the number of lines in the file
               total_lines=$(wc -l < "$file")
               # Get the line numbers of the changes
-              echo "Full git diff for $file:"
-              git diff --cached -U0 "$file" | grep -E '^([+-]{3}|\@\@)'
-              changed_lines=$(git diff --cached -U0 "$file" | grep -E '^([+-]{3}|\@\@)' | grep -oP '^\+\+\+ \./\K.*|^\@\@ -[0-9]+(,[0-9]+)? \+[0-9]+(,[0-9]+)?(?= \@\@)')
+              changed_lines=$(git diff --cached -U0 "$file" | grep -o '@@ [^ ]* [^ ]* @@' | awk '{print $3}' | cut -d ',' -f1 | sed 's/[^0-9]//g')
               echo "Changed lines in $file: $changed_lines"
               # Check if any change is within the last 10 lines
               for line in $changed_lines; do
