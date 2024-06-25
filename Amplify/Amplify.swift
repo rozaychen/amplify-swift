@@ -27,7 +27,6 @@ public class Amplify {
     ///
     /// - Tag: Amplify.isConfigured
     ///
-    /// 
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
