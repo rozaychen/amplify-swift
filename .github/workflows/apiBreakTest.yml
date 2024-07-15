@@ -17,6 +17,7 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         ref: ${{ github.head_ref }}  # Checkout the PR branch
+        fetch-depth: 1
 
     - name: Fetch the base branch
       run: |
@@ -27,6 +28,8 @@ jobs:
 
     - name: Checkout test-final branch
       run: git checkout ${{ github.head_ref }}
+    - name: Checkout test-final branch
+      run: git checkout ${{ github.sha }}
 
     - name: Setup and Run Swift API Diff
       env:
