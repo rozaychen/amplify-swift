@@ -19,17 +19,19 @@ jobs:
         ref: ${{ github.head_ref }}  # Checkout the PR branch
         fetch-depth: 1
 
-    - name: Fetch the base branch
+    - name: Fetch the branchs
       run: |
         git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+        git fetch origin ${{ github.sha }}
 
     - name: List branches after fetch
       run: git branch -a
 
+    - name: Checkout test-final commit
+      run: git checkout ${{ github.sha }}
+      
     - name: Checkout test-final branch
       run: git checkout ${{ github.head_ref }}
-    - name: Checkout test-final branch
-      run: git checkout ${{ github.sha }}
 
     - name: Setup and Run Swift API Diff
       env:
