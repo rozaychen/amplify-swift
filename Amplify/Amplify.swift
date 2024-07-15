@@ -57,7 +57,8 @@ public class Amplify {
 
     /// - Tag: Amplify.Predictions
     public static internal(set) var Predictions = PredictionsCategory()
-
+    
+    @_spi(InternalAmplifyConfiguration)
     /// - Tag: Amplify.Storage
     public static internal(set) var Storage = StorageCategory()
 
