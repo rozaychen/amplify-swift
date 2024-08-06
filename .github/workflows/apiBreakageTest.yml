@@ -216,7 +216,7 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
         else
           echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
-          if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = "true" ]; then
+          if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = true ]; then
             echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated._" >> $GITHUB_ENV
           fi
           echo "EOF" >> $GITHUB_ENV
