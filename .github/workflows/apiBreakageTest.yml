@@ -152,7 +152,6 @@ jobs:
               total_lines=$(wc -l < "$file")
               # Get the line numbers of the changes
               changed_lines=$(git diff --cached -U0 "$file" | grep -o '@@ [^ ]* [^ ]* @@' | awk '{print $3}' | cut -d ',' -f1 | sed 's/[^0-9]//g')
-              echo "Changed lines in $file: $changed_lines"
               # Check if any change is not within the last 10 lines
               for line in $changed_lines; do
                 if [ "$line" -le "$((total_lines - 10))" ]; then
@@ -173,7 +172,7 @@ jobs:
               git commit -m "Update API dumps for new version"
               git push origin HEAD:${{ github.head_ref }}
             else
-              echo "Branch is not up-to-date with main. Skipping."
+              echo "Branch is not up-to-date with main. Skip API file committing."
             fi
           else
             echo "No changes to commit in the api-dump folder."
@@ -207,27 +206,16 @@ jobs:
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
           echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
-          echo "point1"
           if [ "$is_up_to_date" = "false" ]; then
-            echo "point2"
             api_diff_output="${api_diff_output}❗️ _Warning: Your branch is not up to date with the reference branch. Please ensure your branch is updated to avoid potential conflicts and ensure accurate API change detection._"
-            echo -e "$api_diff_output" >> $GITHUB_ENV
-            echo "point3"
-            echo "EOF" >> $GITHUB_ENV
-            echo "point4"
-            exit 1
           fi
-          echo "point5"
           echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         else
-          echo "point6"
           echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
           if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = "true" ]; then
-            echo "point7"
             echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated." >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
-            exit 1
           fi
           echo "EOF" >> $GITHUB_ENV
         fi
@@ -238,6 +226,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const apiDiffOutput = process.env.API_DIFF_OUTPUT;
+          const isUpToDate = process.env.is_up_to_date === 'true';
           const issueNumber = context.payload.pull_request.number;
           const owner = context.repo.owner;
           const repo = context.repo.repo;
@@ -251,4 +240,8 @@ jobs:
             });
           } else {
             console.log("No API diff output found.");
+          }
+          if (!isUpToDate) {
+            // Fail the job
+            throw new Error("Branch is not up to date with the reference branch.");
           }
