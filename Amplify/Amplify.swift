@@ -79,7 +79,10 @@ public class Amplify {
         }
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
-
+    
+    public func testAPIBreakageNameChange2(optionalVersion: Int = 10) -> Bool {
+            return 3>1-optionalVersion
+        }
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
