@@ -181,7 +181,11 @@ jobs:
           echo "No changes to commit in the api-dump folder."
         fi
 
-        git stash pop || true
+        if git stash list | grep -q 'stash@{0}'; then
+          git stash pop
+        else
+          echo "No stash entries found."
+        fi
 
         # Compare APIs for each module and capture the output
         api_diff_output=""
