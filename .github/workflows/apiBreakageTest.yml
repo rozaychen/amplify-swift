@@ -21,17 +21,17 @@ jobs:
 
     - name: Fetch the branchs
       run: |
-        git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
         git fetch origin ${{ github.sha }}
-
-    - name: List branches after fetch
-      run: git branch -a
-
-    - name: Checkout test-final commit
-      run: git checkout ${{ github.sha }}
-      
-    - name: Checkout test-final branch
-      run: git checkout ${{ github.head_ref }}
+        
+    - name: Check if branch is up-to-date with reference branch
+      id: check-up-to-date
+      run: |
+        git fetch origin ${{ github.event.pull_request.base.ref }}
+        if git merge-base --is-ancestor origin/${{ github.event.pull_request.base.ref }} HEAD; then
+          echo "is_up_to_date=true" >> $GITHUB_ENV
+        else
+          echo "is_up_to_date=false" >> $GITHUB_ENV
+        fi
 
     - name: Setup and Run Swift API Diff
       env:
@@ -113,34 +113,6 @@ jobs:
           swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$NEW_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
         done
         
-        # Compare APIs for each module and capture the output
-        api_diff_output=""
-        for module in $modules; do
-          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
-          if [ -n "$module_diff_output" ]; then
-            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
-
-            # Check if there are lines containing "has been renamed to Func"
-            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
-                # Capture the line containing "has been renamed to Func"
-                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
-            
-                # Append a message to the module_diff_output
-                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
-            fi
-          fi
-        done
-        
-        echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
-        if [ -n "$api_diff_output" ]; then
-          echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
-          echo -e "$api_diff_output" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        else
-          echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        fi
 
         # Checkout to the branch associated with the pull request
         git stash --include-untracked
@@ -196,8 +168,11 @@ jobs:
           done
 
           if [ "$push_changes" = true ]; then
-            git commit -m "Update API dumps for new version"
-            git push origin HEAD:${{ github.head_ref }}
+            if [ "$is_up_to_date" = "true" ]; then
+              git commit -m "Update API dumps for new version"
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              echo "Branch is not up-to-date with main. Skipping
           else
             echo "No changes to commit in the api-dump folder."
           fi
@@ -206,6 +181,46 @@ jobs:
         fi
 
         git stash pop || true
+
+        # Compare APIs for each module and capture the output
+        api_diff_output=""
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
+          if [ -n "$module_diff_output" ]; then
+            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+            
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
+          fi
+        done
+        
+        echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        if [ -n "$api_diff_output" ]; then
+          echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
+          if [ "$is_up_to_date" = "false" ]; then
+            api_diff_output="${api_diff_output}❗️ _Warning: Your branch is not up to date with the reference branch. Please ensure your branch is updated to avoid potential conflicts and ensure accurate API change detection._"
+            echo -e "$api_diff_output" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo -e "$api_diff_output" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        else
+          echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
+          if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = true ]; then
+            echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated."
+            echo "EOF" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "EOF" >> $GITHUB_ENV
+        fi
         
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
