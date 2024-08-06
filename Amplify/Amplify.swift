@@ -27,10 +27,7 @@ public class Amplify {
     ///
     /// - Tag: Amplify.isConfigured
     ///
-    /// 
-    public func testAPIBreakageNameChange2(optionalVersion: Int = 10) -> Bool {
-            return 3>1-optionalVersion
-        }
+    ///
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
@@ -77,7 +74,10 @@ public class Amplify {
         }
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
-
+    
+    public func testAPIBreakageNameChange2(optionalVersion: Int = 10) -> Bool {
+            return 3>1-optionalVersion
+        }
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
