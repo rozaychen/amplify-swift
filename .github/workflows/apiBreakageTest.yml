@@ -113,28 +113,7 @@ jobs:
           swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$NEW_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
         done
 
-        # Compare APIs for each module and capture the output
-        echo "point8"
-        api_diff_output=""
-        for module in $modules; do
-          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
-          if [ -n "$module_diff_output" ]; then
-            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
-            echo "point9"
-
-            # Check if there are lines containing "has been renamed to Func"
-            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
-                echo "point10"
-                # Capture the line containing "has been renamed to Func"
-                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
-                echo "point11"
-                # Append a message to the module_diff_output
-                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
-                echo "point12"
-            fi
-          fi
-        done
+        
 
         # Checkout to the branch associated with the pull request
         git stash --include-untracked
@@ -194,7 +173,7 @@ jobs:
               git commit -m "Update API dumps for new version"
               git push origin HEAD:${{ github.head_ref }}
             else
-              echo "Branch is not up-to-date with main. Skipping
+              echo "Branch is not up-to-date with main. Skipping."
           else
             echo "No changes to commit in the api-dump folder."
           fi
@@ -203,6 +182,25 @@ jobs:
         fi
 
         git stash pop || true
+
+        # Compare APIs for each module and capture the output
+        api_diff_output=""
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
+          if [ -n "$module_diff_output" ]; then
+            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
+          fi
+        done
 
         
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
@@ -224,7 +222,7 @@ jobs:
         else
           echo "point6"
           echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
-          if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = true ]; then
+          if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = "true" ]; then
             echo "point7"
             echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated." >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
