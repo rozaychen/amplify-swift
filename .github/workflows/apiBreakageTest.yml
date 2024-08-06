@@ -27,7 +27,7 @@ jobs:
       id: check-up-to-date
       run: |
         git fetch origin ${{ github.event.pull_request.base.ref }}
-        if git merge-base --is-ancestor origin/main ${{ github.event.pull_request.head.sha }}; then
+        if git merge-base --is-ancestor ${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }}; then
           echo "true"
           echo "is_up_to_date=true" >> $GITHUB_ENV
         else
