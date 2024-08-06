@@ -204,18 +204,25 @@ jobs:
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
           echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
+          echo "point1"
           if [ "$is_up_to_date" = "false" ]; then
+            echo "point2"
             api_diff_output="${api_diff_output}❗️ _Warning: Your branch is not up to date with the reference branch. Please ensure your branch is updated to avoid potential conflicts and ensure accurate API change detection._"
             echo -e "$api_diff_output" >> $GITHUB_ENV
+            echo "point3"
             echo "EOF" >> $GITHUB_ENV
+            echo "point4"
             exit 1
           fi
+          echo "point5"
           echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         else
+          echo "point6"
           echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
           if [ "$is_up_to_date" = "false" ] && [ "$push_changes" = true ]; then
-            echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated."
+            echo "point7"
+            echo "❗️ _Warning: Your branch is not up to date with the reference branch. The API file can not successfully updated." >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
             exit 1
           fi
