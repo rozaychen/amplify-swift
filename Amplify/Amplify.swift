@@ -28,6 +28,11 @@ public class Amplify {
     /// - Tag: Amplify.isConfigured
     ///
     /// 
+    public var testBreakVar: Int = 4
+    public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+            return oldVersion>newVersion-optionalVersion
+        }
+    
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
