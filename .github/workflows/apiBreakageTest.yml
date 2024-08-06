@@ -181,12 +181,6 @@ jobs:
           echo "No changes to commit in the api-dump folder."
         fi
 
-        if git stash list | grep -q 'stash@{0}'; then
-          git stash pop
-        else
-          echo "No stash entries found."
-        fi
-
         # Compare APIs for each module and capture the output
         api_diff_output=""
         for module in $modules; do
@@ -199,7 +193,7 @@ jobs:
             if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
                 # Capture the line containing "has been renamed to Func"
                 renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
-
+            
                 # Append a message to the module_diff_output
                 api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
             fi
