@@ -180,7 +180,11 @@ jobs:
         else
           echo "No changes to commit in the api-dump folder."
         fi
+        
+        git stash pop || true
 
+        echo "Comparing APIs"
+        
         # Compare APIs for each module and capture the output
         api_diff_output=""
         for module in $modules; do
@@ -200,6 +204,7 @@ jobs:
           fi
         done
 
+        echo "Generating Comments"
         
         echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
         if [ -n "$api_diff_output" ]; then
