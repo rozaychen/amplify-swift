@@ -113,6 +113,26 @@ jobs:
           swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$NEW_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
         done
 
+        echo "Comparing APIs"
+        
+        # Compare APIs for each module and capture the output
+        api_diff_output=""
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
+          if [ -n "$module_diff_output" ]; then
+            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+            
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
+          fi
+        done
         
 
         # Checkout to the branch associated with the pull request
@@ -183,26 +203,6 @@ jobs:
         
         git stash pop || true
 
-        echo "Comparing APIs"
-        
-        # Compare APIs for each module and capture the output
-        api_diff_output=""
-        for module in $modules; do
-          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
-          if [ -n "$module_diff_output" ]; then
-            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
-
-            # Check if there are lines containing "has been renamed to Func"
-            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
-                # Capture the line containing "has been renamed to Func"
-                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
-            
-                # Append a message to the module_diff_output
-                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
-            fi
-          fi
-        done
 
         echo "Generating Comments"
         
