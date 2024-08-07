@@ -143,6 +143,7 @@ jobs:
         
 
         # Checkout to the branch associated with the pull request
+        git fetch origin ${{ github.head_ref }}
         git stash --include-untracked
         git checkout ${{ github.head_ref }}
 
