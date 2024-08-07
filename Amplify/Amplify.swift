@@ -32,7 +32,7 @@ public class Amplify {
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
             return oldVersion>newVersion-optionalVersion
         }
-    public func testAPIBreakageNameChange2(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+    public func testAPIBreakageNameChange2(oldVersion: Int, newVersion: Int, optionalVersion: Int) -> Bool {
             return oldVersion>newVersion-optionalVersion
         }
     
