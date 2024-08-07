@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         ref: ${{ github.head_ref }}  # Checkout the PR branch
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Fetch the branchs
       run: |
@@ -26,6 +26,7 @@ jobs:
     - name: Check if branch is up-to-date with reference branch
       run: |
         git fetch origin ${{ github.event.pull_request.base.ref }}
+        git fetch origin ${{ github.head_ref }} --depth=0
         echo "${{ github.event.pull_request.base.sha }}"
         echo "${{ github.event.pull_request.head.sha }}"
         if git merge-base --is-ancestor ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}; then
