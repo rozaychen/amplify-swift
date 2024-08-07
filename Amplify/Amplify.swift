@@ -29,6 +29,7 @@ public class Amplify {
     ///
     /// 
     public var testBreakVar: Int = 4
+    public var testBreakVar2: Float = 4.0
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
             return oldVersion>newVersion-optionalVersion
         }
