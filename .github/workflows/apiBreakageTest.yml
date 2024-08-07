@@ -17,7 +17,11 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         ref: ${{ github.head_ref }}  # Checkout the PR branch
-        fetch-depth: 1
+        fetch-depth: 0
+
+    - name: Fetch the branchs
+      run: |
+        git fetch --all
         
     - name: Check if branch is up-to-date with reference branch
       run: |
@@ -31,10 +35,6 @@ jobs:
           echo "false"
           echo "is_up_to_date=false" >> $GITHUB_ENV
         fi
-
-    - name: Fetch the branchs
-      run: |
-        git fetch origin ${{ github.sha }}
 
     - name: Setup and Run Swift API Diff
       env:
