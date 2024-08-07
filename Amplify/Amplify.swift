@@ -33,8 +33,11 @@ public class Amplify {
     public func testAPIBreakageNameChange(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
             return oldVersion>newVersion-optionalVersion
         }
-    public func testAPIBreakageNameChange2(oldVersion: Int, newVersion: Int, optionalVersion: Int = 10) -> Bool {
+    public func testAPIBreakageNameChange2(oldVersion: Int = 30, newVersion: Int = 20, optionalVersion: Int = 10) -> Bool {
             return oldVersion>newVersion-optionalVersion
+        }
+    public func testAPIBreakageNameChange3(oldVersion: Int = 30, newVersion: Int = 20, optionalVersion: Int = 10) -> Int {
+            return oldVersion - optionalVersion - newVersion
         }
     
     static var isConfigured = false
