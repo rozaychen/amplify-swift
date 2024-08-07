@@ -21,7 +21,7 @@ jobs:
 
     - name: Fetch the branchs
       run: |
-        git fetch --all
+        git fetch origin ${{ github.sha }}
         
     - name: Check if branch is up-to-date with reference branch
       run: |
