@@ -11,13 +11,17 @@ jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
     runs-on: macos-latest
-
+    
     steps:
+
+    - name: 'PR commits + 1'
+      run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> $GITHUB_ENV
+    
     - name: Checkout repository
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
-        ref: ${{ github.head_ref }}  # Checkout the PR branch
-        fetch-depth: 1
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: ${{ env.PR_FETCH_DEPTH }}
 
     - name: Fetch the branchs
       run: |
@@ -26,7 +30,6 @@ jobs:
     - name: Check if branch is up-to-date with reference branch
       run: |
         git fetch origin ${{ github.event.pull_request.base.ref }}
-        git fetch origin ${{ github.head_ref }} --unshallow
         echo "${{ github.event.pull_request.base.sha }}"
         echo "${{ github.event.pull_request.head.sha }}"
         if git merge-base --is-ancestor ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}; then
